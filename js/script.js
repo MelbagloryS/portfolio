@@ -11,7 +11,7 @@ menuBtn.addEventListener('click', () => {
 // 2. Contact form: check the fields, then open the visitor's email app with the message filled in
 const form = document.getElementById('contact-form');
 if (form) {
-  const OWNER_EMAIL = 'your-email@example.com'; // TODO: put your real email here
+  const OWNER_EMAIL = 'smelbaglory@gmail.com'; // TODO: put your real email here
 
   const fields = {
     name: v => v.trim() ? '' : 'Enter your name.',
