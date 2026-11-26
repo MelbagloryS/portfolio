@@ -8,10 +8,11 @@ menuBtn.addEventListener('click', () => {
   menuBtn.setAttribute('aria-expanded', open);
 });
 
-// 2. Contact form: check the fields, then open the visitor's email app with the message filled in
+// 2. Contact form: check the fields, then send the message to your email
 const form = document.getElementById('contact-form');
 if (form) {
   const OWNER_EMAIL = 'smelbaglory@gmail.com'; // TODO: put your real email here
+  const status = document.getElementById('status');
 
   const fields = {
     name: v => v.trim() ? '' : 'Enter your name.',
@@ -19,7 +20,7 @@ if (form) {
     message: v => v.trim().length >= 10 ? '' : 'Write at least 10 characters.'
   };
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     let ok = true;
     for (const id in fields) {
@@ -31,10 +32,37 @@ if (form) {
     }
     if (!ok) return;
 
-    const subject = encodeURIComponent('Portfolio message from ' + form.name.value);
-    const body = encodeURIComponent(form.message.value + '\n\nReply to: ' + form.email.value);
-    window.location.href = `mailto:${OWNER_EMAIL}?subject=${subject}&body=${body}`;
-    document.getElementById('status').textContent = 'Opening your email app to send the message.';
-    form.reset();
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    status.textContent = 'Sending your message...';
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/' + OWNER_EMAIL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          _subject: 'Portfolio message from ' + name,
+          _replyto: email,
+          name: name,
+          email: email,
+          message: message
+        })
+      });
+      const data = await res.json();
+      if (data.success === 'true' || data.success === true) {
+        status.textContent = 'Message sent. Thank you, I will reply soon.';
+        form.reset();
+      } else {
+        throw new Error('Send failed');
+      }
+    } catch (err) {
+      status.textContent = 'Could not send the message. Please try again, or contact me on GitHub or LinkedIn.';
+    } finally {
+      button.disabled = false;
+    }
   });
 }
