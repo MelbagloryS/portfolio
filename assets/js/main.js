@@ -13,7 +13,7 @@ if (menuBtn && nav) {
 // 2. Contact form: check the fields, then open the visitor's own mail with the message filled in
 const form = document.getElementById('contact-form');
 if (form) {
-  const OWNER_EMAIL = 'mohanaprasath1735@gmail.com';
+  const OWNER_EMAIL = 'smelbaglory@gmail.com';
   const status = document.getElementById('status');
 
   const fields = {
